@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import CustomCursor from "./components/CustomCursor";
+import Layout from "./components/Layout";
+import { useTheme } from "./hooks/useTheme";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { theme } = useTheme();
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <CustomCursor />
+      <Layout>
+        {/* 임시 콘텐츠: 나중에 각 섹션으로 교체됩니다. */}
+        <div className="h-screen flex flex-col justify-center items-center pt-16">
+          <h1 className="text-4xl font-bold text-violet-accent">
+            Minseok Archive
+          </h1>
+          <p className="mt-4">커스텀 커서와 기본 레이아웃이 적용되었습니다.</p>
+        </div>
+        <div className="h-screen bg-primary-shadow flex justify-center items-center">
+          <p>스크롤을 내려 다른 섹션을 확인하세요.</p>
+        </div>
+      </Layout>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
