@@ -1,7 +1,7 @@
 # Minseok-Archive - An Interactive Portfolio
 
 <p align="center">
-  <img src="./src/assets/logo.png" alt="Digital Atelier Logo" width="150"/>
+  <img src="./src/assets/logo.png" alt="Minseok Archive Logo" width="150"/>
 </p>
 <p align="center"><strong>최민석의 웹 포트폴리오</strong></p>
 <p align="center">
