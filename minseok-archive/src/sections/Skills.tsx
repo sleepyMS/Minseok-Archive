@@ -82,12 +82,22 @@ const initialNodes: Node[] = [
     data: { label: "Next.js" },
     position: { x: 50, y: 50 },
     parentNode: "zone-frontend",
+    style: {
+      backgroundColor: "#000000",
+      color: "#FFFFFF",
+      border: "1px solid #333",
+    },
   },
   {
     id: "react",
     data: { label: "React" },
     position: { x: 250, y: 50 },
     parentNode: "zone-frontend",
+    style: {
+      backgroundColor: "#61DAFB",
+      color: "#000000",
+      border: "1px solid #00C2EE",
+    },
   },
   {
     id: "typescript",
@@ -138,6 +148,11 @@ const initialNodes: Node[] = [
     data: { label: "FastAPI" },
     position: { x: 50, y: 50 },
     parentNode: "zone-backend-python",
+    style: {
+      backgroundColor: "#009688",
+      color: "#FFFFFF",
+      border: "1px solid #00796B",
+    },
   },
   {
     id: "python",
@@ -164,6 +179,11 @@ const initialNodes: Node[] = [
     data: { label: "Spring Boot" },
     position: { x: 50, y: 50 },
     parentNode: "zone-backend-java",
+    style: {
+      backgroundColor: "#6DB33F",
+      color: "#FFFFFF",
+      border: "1px solid #5C9A33",
+    },
   },
   {
     id: "java",
