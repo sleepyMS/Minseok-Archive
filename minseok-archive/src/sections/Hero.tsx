@@ -97,7 +97,6 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  // Framer Motion의 MotionValue들은 그대로 사용합니다.
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 7]);
   const opacityMotionValue = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const textOpacity = useTransform(scrollYProgress, [0, 1.0], [1, 0]);

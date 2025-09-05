@@ -17,7 +17,6 @@ const containerVariants = {
   },
 } as const;
 
-// ⭐️ 핵심 1: 각 열을 위한 새로운 애니메이션 변수를 정의합니다.
 const leftColumnVariants = {
   hidden: { opacity: 0, x: -30 }, // 왼쪽(-50)에서 시작
   visible: {
@@ -49,7 +48,6 @@ const About = () => {
         viewport={{ once: true, amount: 0.3 }}
         className="grid md:grid-cols-5 gap-12 items-start"
       >
-        {/* ⭐️ 핵심 2: 좌측 열에 leftColumnVariants를 적용합니다. */}
         <motion.div
           variants={leftColumnVariants}
           className="md:col-span-2 sticky top-24"
@@ -57,7 +55,6 @@ const About = () => {
           <ProfileCard data={profileData} />
         </motion.div>
 
-        {/* ⭐️ 핵심 3: 우측 열에 rightColumnVariants를 적용합니다. */}
         <motion.div variants={rightColumnVariants} className="md:col-span-3">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
             About Me: The Digital Craftsman

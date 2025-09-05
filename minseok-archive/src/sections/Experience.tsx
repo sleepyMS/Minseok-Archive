@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Sample data (기존과 동일)
+// Sample data
 const experienceData = [
   {
     id: 1,

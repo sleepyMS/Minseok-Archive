@@ -1,6 +1,22 @@
 /* src/index.css */
 
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/variable/woff2/SUIT-Variable.css");
+
+@layer base {
+  html,
+  body {
+    font-family: "SUIT Variable", SUIT, -apple-system, BlinkMacSystemFont,
+      system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+      "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", sans-serif;
+
+    /* 미세 조정: 가독성 향상을 위한 설정 */
+    letter-spacing: -0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
 
 /* ----------------------------------------- */
 /* 1. 테마별 색상 변수 정의 (Color Variables)    */
