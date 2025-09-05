@@ -1,7 +1,11 @@
-// src/components/Layout.tsx - 수정 후
-
 import type { ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// 전역 컴포넌트 Import
 import Header from "./Header";
+import CustomCursor from "./CustomCursor";
+import SkipToContent from "./SkipToContent";
+import Footer from "./Footer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,11 +13,31 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    // ✅ 여기에 Tailwind 클래스를 적용하면 됩니다.
-    <div className="min-h-screen bg-primary text-primary">
-      <Header />
-      <main>{children}</main>
-    </div>
+    <>
+      {/* 2. 웹 접근성을 위한 '본문 바로가기' 컴포넌트 */}
+      <SkipToContent />
+
+      {/* 3. 커스텀 마우스 커서 컴포넌트 */}
+      <CustomCursor />
+
+      <div className="min-h-screen bg-primary text-primary">
+        <Header />
+        {/* 4. 페이지 진입 및 전환 애니메이션 */}
+        <AnimatePresence mode="wait">
+          <motion.main
+            id="main-content" // SkipToContent의 타겟 ID
+            key={location.pathname} // (SPA에서 페이지 이동 시 애니메이션을 위함)
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
+        <Footer />
+      </div>
+    </>
   );
 };
 

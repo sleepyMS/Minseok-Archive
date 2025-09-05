@@ -1,39 +1,43 @@
-// src/hooks/useTheme.tsx
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
-// 테마 타입 정의: 'light' 또는 'dark'
 type Theme = "light" | "dark";
-
-// Context가 제공할 값의 타입 정의
-interface ThemeContextType {
+type ThemeContextType = {
   theme: Theme;
   toggleTheme: () => void;
-}
+};
 
-// ThemeContext 생성 (초기값은 undefined)
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// ThemeProvider 컴포넌트 정의
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  // localStorage에서 테마를 가져오거나, 없으면 'dark'를 기본값으로 설정
   const [theme, setTheme] = useState<Theme>(() => {
-    const storedTheme = localStorage.getItem("theme");
-    return (storedTheme as Theme) || "dark";
+    // Check localStorage for a saved theme or use system preference
+    const savedTheme = localStorage.getItem("theme") as Theme;
+    if (savedTheme) {
+      return savedTheme;
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   });
 
-  // 테마 변경 시 <html> 태그의 클래스와 localStorage 업데이트
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+  };
+
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
+    const root = document.documentElement;
+    // 기존의 .dark 클래스 로직을 아래와 같이 .dark와 .light를 모두 관리하도록 수정합니다.
+    if (theme === "dark") {
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.classList.add("light");
+      root.classList.remove("dark");
+    }
+    // Save theme to localStorage
     localStorage.setItem("theme", theme);
   }, [theme]);
-
-  // 테마를 토글하는 함수
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
@@ -42,7 +46,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// useTheme 커스텀 훅 정의
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {

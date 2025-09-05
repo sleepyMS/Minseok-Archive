@@ -1,6 +1,6 @@
-// src/components/ThemeToggle.tsx
-import { useTheme } from "../hooks/useTheme";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
+import { useTheme } from "../hooks/useTheme";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -8,14 +8,34 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-primary text-primary hover:bg-secondary transition-colors"
+      className="relative flex items-center justify-center w-10 h-10 rounded-full bg-primary-shadow/50 border border-primary-shadow text-primary transition-colors duration-300 hover:bg-violet-accent/10"
+      aria-label="Toggle dark and light theme"
     >
-      {/* 2. 현재 테마에 따라 적절한 아이콘을 보여줍니다. */}
-      {theme === "light" ? (
-        <Moon size={24} /> // 라이트 모드일 때는 Moon 아이콘
-      ) : (
-        <Sun size={24} /> // 다크 모드일 때는 Sun 아이콘
-      )}
+      <AnimatePresence mode="wait" initial={false}>
+        {theme === "dark" ? (
+          <motion.div
+            key="moon"
+            initial={{ rotate: 360, scale: 0 }}
+            animate={{ rotate: 0, scale: 1 }}
+            exit={{ rotate: -360, scale: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute"
+          >
+            <Moon size={20} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="sun"
+            initial={{ rotate: 360, scale: 0 }}
+            animate={{ rotate: 0, scale: 1 }}
+            exit={{ rotate: -360, scale: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute"
+          >
+            <Sun size={20} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </button>
   );
 };

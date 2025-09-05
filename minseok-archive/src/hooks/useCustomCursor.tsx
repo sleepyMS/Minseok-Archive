@@ -1,18 +1,41 @@
-// src/hooks/useCustomCursor.tsx
-import { useState, useEffect } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
+import type { ReactNode } from "react";
 
-export const useCustomCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+// 커서의 다양한 상태를 정의
+type CursorStyle = {
+  size: "small" | "medium" | "large";
+  text: string;
+  isHovering: boolean;
+};
 
-  useEffect(() => {
-    const updatePosition = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-    };
+interface CursorContextType extends CursorStyle {
+  setCursorStyle: (style: Partial<CursorStyle>) => void;
+}
 
-    window.addEventListener("mousemove", updatePosition);
+const CursorContext = createContext<CursorContextType | undefined>(undefined);
 
-    return () => window.removeEventListener("mousemove", updatePosition);
+export const CursorProvider = ({ children }: { children: ReactNode }) => {
+  const [style, setStyle] = useState<CursorStyle>({
+    size: "small",
+    text: "",
+    isHovering: false,
+  });
+
+  const setCursorStyle = useCallback((newStyle: Partial<CursorStyle>) => {
+    setStyle((prevStyle) => ({ ...prevStyle, ...newStyle }));
   }, []);
 
-  return position;
+  return (
+    <CursorContext.Provider value={{ ...style, setCursorStyle }}>
+      {children}
+    </CursorContext.Provider>
+  );
+};
+
+export const useCustomCursor = () => {
+  const context = useContext(CursorContext);
+  if (context === undefined) {
+    throw new Error("useCustomCursor must be used within a CursorProvider");
+  }
+  return context;
 };

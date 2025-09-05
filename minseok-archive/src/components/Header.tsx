@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react"; // lucide-react 아이콘 import
-
-// TODO: ThemeToggle 컴포넌트는 별도로 구현해야 합니다.
-const ThemeToggle = () => {
-  // 임시 플레이스홀더
-  return <button className="w-8 h-8 bg-accent rounded-full"></button>;
-};
+import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
+import { useLenisContext } from "../context/LenisContext";
 
 const navLinks = [
   { title: "About", href: "#about" },
@@ -18,6 +14,7 @@ const navLinks = [
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lenis = useLenisContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +25,19 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // 부드러운 스크롤을 위한 클릭 핸들러
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    e.preventDefault();
+    lenis?.scrollTo(href, {
+      offset: -80, // 헤더 높이만큼 오프셋을 주어 제목이 가려지지 않게 함
+      duration: 1.5, // 스크롤 지속 시간
+    });
+    setIsMenuOpen(false); // 모바일 메뉴 닫기
+  };
 
   // 모바일 메뉴 애니메이션 Variants
   const mobileMenuVariants = {
@@ -40,15 +50,21 @@ const Header = () => {
 
   const mobileLinkVariants = {
     hidden: { opacity: 0, y: -10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 30 },
-    },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -15, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+        delay: 0.2,
+        // 아래의 트랜지션을 추가하여 y와 opacity가 동시에 적용되도록 명시합니다.
+        // 이 경우 y와 opacity에 각각 다른 transition을 적용할 수 있지만, spring 타입은 기본적으로 모든 값에 동일한 트랜지션을 적용합니다.
+      }}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
         ${
           isScrolled
@@ -75,7 +91,9 @@ const Header = () => {
             <a
               key={link.title}
               href={link.href}
+              onClick={(e) => handleLinkClick(e, link.href)}
               className="text-primary hover:text-accent-hover transition-colors duration-300"
+              data-interactive
             >
               {link.title}
             </a>
@@ -107,6 +125,12 @@ const Header = () => {
             initial="hidden"
             animate="visible"
             exit="hidden"
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+              staggerChildren: 0.05,
+            }}
             className="md:hidden absolute top-0 left-0 w-full min-h-screen bg-primary/95 backdrop-blur-xl flex flex-col items-center justify-center"
           >
             <nav className="flex flex-col items-center space-y-8">
@@ -114,8 +138,8 @@ const Header = () => {
                 <motion.a
                   key={link.title}
                   href={link.href}
+                  onClick={(e) => handleLinkClick(e, link.href)}
                   variants={mobileLinkVariants}
-                  onClick={() => setIsMenuOpen(false)}
                   className="text-2xl font-semibold text-primary hover:text-accent-hover transition-colors duration-300"
                 >
                   {link.title}
@@ -125,7 +149,7 @@ const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 };
 
