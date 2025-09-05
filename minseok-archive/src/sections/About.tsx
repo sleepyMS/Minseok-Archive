@@ -1,7 +1,11 @@
+// src/sections/About.tsx
+
 import { motion } from "framer-motion";
 import { Lightbulb, Code, Users } from "lucide-react";
+import profileData from "../data/profileData.json";
+import ProfileCard from "../components/ProfileCard"; // 1. ProfileCard 컴포넌트 import
 
-// Animation Variants
+// Animation Variants (기존과 동일)
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -11,7 +15,7 @@ const containerVariants = {
       delayChildren: 0.2,
     },
   },
-} as const; // Add 'as const' here
+} as const;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -36,26 +40,17 @@ const About = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        className="grid md:grid-cols-5 gap-12 items-center"
+        className="grid md:grid-cols-5 gap-12 items-start" // items-start로 변경하여 높이 불일치 문제 방지
       >
-        {/* 1. Profile Image Area */}
-        <motion.div variants={itemVariants} className="md:col-span-2">
-          <div className="relative p-2 border-2 border-accent rounded-xl shadow-lg shadow-accent/20">
-            <div className="bg-secondary rounded-lg p-4">
-              {/* TODO: Replace with your profile image. */}
-              <img
-                src="https://via.placeholder.com/400"
-                alt="Minseok Choi's Profile"
-                className="w-full h-auto rounded-md object-cover"
-              />
-            </div>
-            <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xl shadow-md">
-              M
-            </div>
-          </div>
+        {/* ⭐️⭐️⭐️ 1. Profile Image Area (이 부분을 ProfileCard로 교체) ⭐️⭐️⭐️ */}
+        <motion.div
+          variants={itemVariants}
+          className="md:col-span-2 sticky top-24"
+        >
+          <ProfileCard data={profileData} />
         </motion.div>
 
-        {/* 2. Text Content Area */}
+        {/* 2. Text Content Area (기존과 동일) */}
         <motion.div variants={itemVariants} className="md:col-span-3">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
             About Me: The Digital Craftsman
@@ -72,7 +67,7 @@ const About = () => {
             products alongside brilliant colleagues.
           </p>
 
-          {/* 3. Core Values */}
+          {/* 3. Core Values (기존과 동일) */}
           <div className="space-y-4">
             <div className="flex items-start space-x-4">
               <div className="p-2 bg-secondary rounded-full text-accent">

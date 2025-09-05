@@ -51,7 +51,7 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 5]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 7]);
   const opacityMotionValue = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const [crystalOpacity, setCrystalOpacity] = useState(1);
@@ -62,14 +62,14 @@ const Hero = () => {
   const textOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   const crystalProps = {
-    dark: { color: "#8A2BE2", metalness: 0.8, roughness: 0.1 },
+    dark: { color: "#8A2BE2", metalness: 0.7, roughness: 0.1 },
     light: { color: "#C77DFF", metalness: 0.8, roughness: 0.1 },
   };
   const currentProps =
     theme === "dark" ? crystalProps.dark : crystalProps.light;
 
   return (
-    <section ref={targetRef} className="relative h-[200vh]">
+    <section ref={targetRef} className="relative h-[150vh]">
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
         <motion.div
           style={{ scale }}

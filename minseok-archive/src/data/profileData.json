@@ -1,0 +1,11 @@
+{
+  "name": "민석(Minseok)",
+  "title": "Creative Frontend Developer",
+  "affiliation": "Google",
+  "major": "Computer Science",
+  "profileImage": "/images/minseok_face.png",
+  "contact": {
+    "email": "your.email@example.com",
+    "phone": "+82 10-1234-5678"
+  }
+}
