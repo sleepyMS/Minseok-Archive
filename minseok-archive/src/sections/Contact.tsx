@@ -128,13 +128,17 @@ const Contact = () => {
               Direct Email
             </h3>
             <a
-              href="mailto:your-email@example.com" // 👈 본인 이메일 주소로 변경하세요
+              href="mailto:minseok011017@gmail.com"
               className="flex items-center gap-3 text-secondary hover:text-accent transition-colors"
               data-interactive
             >
               <Mail size={20} />
-              <span>your-email@example.com</span>
+              <span>minseok011017@gmail.com</span>
             </a>
+            <p className="mt-3 text-sm text-secondary">
+              오른쪽의 폼을 이용하시거나, 위 이메일 주소로 직접 연락주셔도
+              좋습니다.
+            </p>
           </div>
         </motion.div>
 
