@@ -1,4 +1,6 @@
-import { useState, useCallback } from "react";
+// src/sections/Skills.tsx
+
+import { useCallback } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   Controls,
@@ -10,65 +12,278 @@ import ReactFlow, {
 import type { Connection, Edge, Node } from "reactflow";
 import "reactflow/dist/style.css";
 
-// --- Data for the Skill Map ---
+// --- Data for the Final, Zoned Skill Map ---
 const initialNodes: Node[] = [
-  // Frontend
+  // SECTION: Parent Groups (Zones)
+  {
+    id: "zone-frontend",
+    data: { label: "Frontend" },
+    position: { x: -700, y: -250 },
+    className: "light",
+    style: {
+      backgroundColor: "rgba(97, 218, 251, 0.1)",
+      width: 450,
+      height: 600,
+    },
+    type: "group",
+  },
+  {
+    id: "zone-backend-python",
+    data: { label: "Backend (Python)" },
+    position: { x: -200, y: -50 },
+    className: "light",
+    style: {
+      backgroundColor: "rgba(76, 175, 80, 0.1)",
+      width: 400,
+      height: 250,
+    },
+    type: "group",
+  },
+  {
+    id: "zone-backend-java",
+    data: { label: "Backend (Java)" },
+    position: { x: -200, y: 250 },
+    className: "light",
+    style: {
+      backgroundColor: "rgba(248, 150, 32, 0.1)",
+      width: 400,
+      height: 150,
+    },
+    type: "group",
+  },
+  {
+    id: "zone-devops",
+    data: { label: "DevOps & Cloud" },
+    position: { x: 250, y: -200 },
+    className: "light",
+    style: {
+      backgroundColor: "rgba(240, 80, 50, 0.1)",
+      width: 400,
+      height: 350,
+    },
+    type: "group",
+  },
+  {
+    id: "zone-db",
+    data: { label: "Database" },
+    position: { x: 250, y: 200 },
+    className: "light",
+    style: {
+      backgroundColor: "rgba(51, 103, 145, 0.1)",
+      width: 400,
+      height: 200,
+    },
+    type: "group",
+  },
+
+  // SECTION: Frontend Nodes
+  {
+    id: "nextjs",
+    data: { label: "Next.js" },
+    position: { x: 50, y: 50 },
+    parentNode: "zone-frontend",
+  },
   {
     id: "react",
-    position: { x: 0, y: 0 },
     data: { label: "React" },
-    type: "default",
+    position: { x: 250, y: 50 },
+    parentNode: "zone-frontend",
   },
   {
     id: "typescript",
-    position: { x: -200, y: 100 },
     data: { label: "TypeScript" },
-    type: "default",
+    position: { x: 50, y: 150 },
+    parentNode: "zone-frontend",
+  },
+  {
+    id: "zustand",
+    data: { label: "Zustand" },
+    position: { x: 250, y: 150 },
+    parentNode: "zone-frontend",
+  },
+  {
+    id: "tanstack-query",
+    data: { label: "TanStack Query" },
+    position: { x: 50, y: 250 },
+    parentNode: "zone-frontend",
   },
   {
     id: "tailwind",
-    position: { x: 200, y: 100 },
     data: { label: "Tailwind CSS" },
-    type: "default",
+    position: { x: 250, y: 250 },
+    parentNode: "zone-frontend",
   },
   {
     id: "framer",
-    position: { x: 0, y: 200 },
     data: { label: "Framer Motion" },
-    type: "default",
+    position: { x: 50, y: 350 },
+    parentNode: "zone-frontend",
   },
-
-  // 3D / Graphics
   {
     id: "three",
-    position: { x: 300, y: -100 },
     data: { label: "Three.js / R3F" },
-    type: "default",
+    position: { x: 250, y: 350 },
+    parentNode: "zone-frontend",
+  },
+  {
+    id: "vite",
+    data: { label: "Vite" },
+    position: { x: 150, y: 500 },
+    parentNode: "zone-frontend",
   },
 
-  // Backend (Example)
+  // SECTION: Backend (Python) Nodes
   {
-    id: "node",
-    position: { x: -300, y: -100 },
-    data: { label: "Node.js" },
-    type: "default",
+    id: "fastapi",
+    data: { label: "FastAPI" },
+    position: { x: 50, y: 50 },
+    parentNode: "zone-backend-python",
+  },
+  {
+    id: "python",
+    data: { label: "Python" },
+    position: { x: 250, y: 50 },
+    parentNode: "zone-backend-python",
+  },
+  {
+    id: "celery",
+    data: { label: "Celery & Redis" },
+    position: { x: 50, y: 150 },
+    parentNode: "zone-backend-python",
+  },
+  {
+    id: "sqlalchemy",
+    data: { label: "SQLAlchemy" },
+    position: { x: 250, y: 150 },
+    parentNode: "zone-backend-python",
+  },
+
+  // SECTION: Backend (Java) Nodes
+  {
+    id: "springboot",
+    data: { label: "Spring Boot" },
+    position: { x: 50, y: 50 },
+    parentNode: "zone-backend-java",
+  },
+  {
+    id: "java",
+    data: { label: "Java" },
+    position: { x: 250, y: 50 },
+    parentNode: "zone-backend-java",
+  },
+
+  // SECTION: DevOps & Cloud Nodes
+  {
+    id: "aws",
+    data: { label: "AWS" },
+    position: { x: 125, y: 50 },
+    parentNode: "zone-devops",
+    type: "output",
+  },
+  {
+    id: "docker",
+    data: { label: "Docker" },
+    position: { x: 50, y: 150 },
+    parentNode: "zone-devops",
+  },
+  {
+    id: "github-actions",
+    data: { label: "GitHub Actions" },
+    position: { x: 200, y: 150 },
+    parentNode: "zone-devops",
+  },
+  {
+    id: "git",
+    data: { label: "Git & GitHub" },
+    position: { x: 125, y: 250 },
+    parentNode: "zone-devops",
+  },
+
+  // SECTION: Database Nodes
+  {
+    id: "postgresql",
+    data: { label: "PostgreSQL" },
+    position: { x: 50, y: 75 },
+    parentNode: "zone-db",
+  },
+  {
+    id: "mysql",
+    data: { label: "MySQL" },
+    position: { x: 250, y: 75 },
+    parentNode: "zone-db",
   },
 ];
 
 const initialEdges: Edge[] = [
-  // Connections from React
-  { id: "e-react-ts", source: "react", target: "typescript", animated: true },
+  // Frontend internal connections
+  { id: "e-next-react", source: "nextjs", target: "react", animated: true },
+  { id: "e-react-ts", source: "react", target: "typescript" },
   {
-    id: "e-react-tailwind",
+    id: "e-react-framer",
     source: "react",
-    target: "tailwind",
+    target: "framer",
+    label: "Animation",
+  },
+  { id: "e-react-three", source: "react", target: "three", label: "3D" },
+  // Backend internal connections
+  {
+    id: "e-fastapi-python",
+    source: "fastapi",
+    target: "python",
     animated: true,
   },
-  { id: "e-react-framer", source: "react", target: "framer", animated: true },
-  { id: "e-react-three", source: "react", target: "three", animated: true },
-
-  // Other connections
-  { id: "e-ts-node", source: "typescript", target: "node", animated: true },
+  {
+    id: "e-springboot-java",
+    source: "springboot",
+    target: "java",
+    animated: true,
+  },
+  // DevOps internal connections
+  {
+    id: "e-git-actions",
+    source: "git",
+    target: "github-actions",
+    animated: true,
+  },
+  {
+    id: "e-actions-docker",
+    source: "github-actions",
+    target: "docker",
+    animated: true,
+    label: "Build",
+  },
+  {
+    id: "e-docker-aws",
+    source: "docker",
+    target: "aws",
+    animated: true,
+    label: "Deploy",
+  },
+  // Cross-zone connections
+  {
+    id: "e-frontend-fastapi",
+    source: "nextjs",
+    target: "fastapi",
+    label: "API Call",
+  },
+  {
+    id: "e-frontend-springboot",
+    source: "nextjs",
+    target: "springboot",
+    label: "API Call",
+  },
+  {
+    id: "e-fastapi-db",
+    source: "fastapi",
+    target: "postgresql",
+    label: "Connects to",
+  },
+  {
+    id: "e-springboot-db",
+    source: "springboot",
+    target: "mysql",
+    label: "Connects to",
+  },
 ];
 
 const Skills = () => {
@@ -80,33 +295,69 @@ const Skills = () => {
     [setEdges]
   );
 
-  // node 파라미터의 타입을 'any' 대신 'Node'로 정확하게 지정합니다.
-  const onNodeMouseEnter = (_event: React.MouseEvent, node: Node) => {
-    setEdges((eds) =>
-      eds.map((edge) => {
-        if (edge.source === node.id || edge.target === node.id) {
-          return { ...edge, style: { stroke: "#8A2BE2", strokeWidth: 2 } };
-        }
-        return edge;
-      })
-    );
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.id === node.id) {
-          return { ...n, style: { background: "#8A2BE2", color: "white" } };
-        }
-        return n;
-      })
-    );
-  };
+  const onNodeMouseEnter = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      // ✅ FIX: Only highlight if the node is NOT a group panel.
+      if (node.type !== "group") {
+        setNodes((nds) =>
+          nds.map((n) => {
+            if (n.id === node.id) {
+              return {
+                ...n,
+                style: {
+                  ...n.style,
+                  backgroundColor: "#8A2BE2",
+                  color: "white",
+                },
+              };
+            }
+            return n;
+          })
+        );
+        setEdges((eds) =>
+          eds.map((edge) => {
+            if (edge.source === node.id || edge.target === node.id) {
+              return {
+                ...edge,
+                animated: true,
+                style: { ...edge.style, stroke: "#8A2BE2", strokeWidth: 2 },
+              };
+            }
+            return edge;
+          })
+        );
+      }
+    },
+    [setNodes, setEdges]
+  );
 
-  const onNodeMouseLeave = (_event: React.MouseEvent, node: Node) => {
-    setEdges((eds) => eds.map((edge) => ({ ...edge, style: undefined })));
-    setNodes((nds) => nds.map((n) => ({ ...n, style: undefined })));
-  };
+  const onNodeMouseLeave = useCallback(
+    (_event: React.MouseEvent, _node: Node) => {
+      // Reset all nodes and edges to their initial styles
+      setNodes((nds) =>
+        nds.map((n) => {
+          const initialNode = initialNodes.find(
+            (initNode) => initNode.id === n.id
+          );
+          return { ...n, style: initialNode?.style };
+        })
+      );
+      setEdges((eds) =>
+        eds.map((edge) => {
+          const initialEdge = initialEdges.find((e) => e.id === edge.id);
+          return {
+            ...edge,
+            animated: initialEdge?.animated || false,
+            style: initialEdge?.style,
+          };
+        })
+      );
+    },
+    [setNodes, setEdges]
+  );
 
   return (
-    <section id="skills" className="container mx-auto px-6 py-24 h-[700px]">
+    <section id="skills" className="container mx-auto px-6 py-24 h-[900px]">
       <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">
         My Arsenal
       </h2>
@@ -119,7 +370,9 @@ const Skills = () => {
         onNodeMouseEnter={onNodeMouseEnter}
         onNodeMouseLeave={onNodeMouseLeave}
         fitView
+        proOptions={{ hideAttribution: true }}
         className="bg-secondary rounded-lg"
+        nodesDraggable={true}
       >
         <Controls showInteractive={false} />
         <Background gap={16} />
@@ -128,7 +381,6 @@ const Skills = () => {
   );
 };
 
-// Wrap with ReactFlowProvider
 const SkillsSection = () => (
   <ReactFlowProvider>
     <Skills />

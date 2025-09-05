@@ -17,15 +17,22 @@ const containerVariants = {
   },
 } as const;
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+// ⭐️ 핵심 1: 각 열을 위한 새로운 애니메이션 변수를 정의합니다.
+const leftColumnVariants = {
+  hidden: { opacity: 0, x: -30 }, // 왼쪽(-50)에서 시작
   visible: {
     opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeInOut",
-    },
+    x: 0, // 최종 위치(0)로 이동
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+} as const;
+
+const rightColumnVariants = {
+  hidden: { opacity: 0, x: 30 }, // 오른쪽(50)에서 시작
+  visible: {
+    opacity: 1,
+    x: 0, // 최종 위치(0)로 이동
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 } as const;
 
@@ -42,15 +49,16 @@ const About = () => {
         viewport={{ once: true, amount: 0.3 }}
         className="grid md:grid-cols-5 gap-12 items-start"
       >
+        {/* ⭐️ 핵심 2: 좌측 열에 leftColumnVariants를 적용합니다. */}
         <motion.div
-          variants={itemVariants}
+          variants={leftColumnVariants}
           className="md:col-span-2 sticky top-24"
         >
           <ProfileCard data={profileData} />
         </motion.div>
 
-        {/* 2. Text Content Area */}
-        <motion.div variants={itemVariants} className="md:col-span-3">
+        {/* ⭐️ 핵심 3: 우측 열에 rightColumnVariants를 적용합니다. */}
+        <motion.div variants={rightColumnVariants} className="md:col-span-3">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
             About Me: The Digital Craftsman
           </h2>
@@ -66,7 +74,7 @@ const About = () => {
             products alongside brilliant colleagues.
           </p>
 
-          {/* 3. Core Values */}
+          {/* Core Values */}
           <div className="space-y-4">
             <div className="flex items-start space-x-4">
               <div className="p-2 bg-secondary rounded-full text-accent">
