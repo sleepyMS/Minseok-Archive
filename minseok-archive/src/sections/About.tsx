@@ -23,7 +23,7 @@ const itemVariants = {
       ease: "easeInOut",
     },
   },
-} as const; // And also here
+} as const;
 
 const About = () => {
   return (

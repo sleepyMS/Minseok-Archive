@@ -1,13 +1,18 @@
 // src/sections/Hero.tsx
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+} from "framer-motion";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { useTheme } from "../hooks/useTheme";
 import Crystal from "../components/canvas/Crystal";
+import useIsMobile from "../hooks/useIsMobile";
 
-// 간단한 타이핑 애니메이션 컴포넌트
 const TypingText = ({ text }: { text: string }) => {
   const textVariants = {
     hidden: { opacity: 0 },
@@ -16,12 +21,10 @@ const TypingText = ({ text }: { text: string }) => {
       transition: { staggerChildren: 0.08, delayChildren: 0.5 * i },
     }),
   };
-
   const charVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
-
   return (
     <motion.h1
       variants={textVariants}
@@ -41,40 +44,43 @@ const TypingText = ({ text }: { text: string }) => {
 const Hero = () => {
   const { theme } = useTheme();
   const targetRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end start"],
   });
 
-  // 스크롤에 따른 3D 캔버스의 스타일 변화
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.5], ["0%", "-50%"]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 5]);
+  const opacityMotionValue = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // TODO: 헤더 로고의 정확한 위치를 가져오는 로직 추가 필요
-  // 지금은 임시로 화면 상단 중앙으로 이동하도록 설정
-  const x = useTransform(scrollYProgress, [0, 0.5], ["0%", "-50%"]);
+  const [crystalOpacity, setCrystalOpacity] = useState(1);
+  useMotionValueEvent(opacityMotionValue, "change", (latest) => {
+    setCrystalOpacity(latest);
+  });
 
-  // 테마에 따라 Crystal에 전달할 속성 정의
+  const textOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
   const crystalProps = {
     dark: { color: "#8A2BE2", metalness: 0.8, roughness: 0.1 },
     light: { color: "#C77DFF", metalness: 0.8, roughness: 0.1 },
   };
-
   const currentProps =
     theme === "dark" ? crystalProps.dark : crystalProps.light;
 
   return (
     <section ref={targetRef} className="relative h-[200vh]">
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
         <motion.div
-          style={{ scale, opacity, y, x }}
-          className="absolute w-full h-full"
+          style={{ scale }}
+          className="absolute w-screen h-screen"
           data-interactive
           data-cursor-text={"Drag"}
         >
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            {/* 1. 조명을 더 풍부하게 만듭니다. */}
+          <Canvas
+            style={{ pointerEvents: isMobile ? "none" : "auto" }}
+            camera={{ position: [0, 0, 5], fov: 45 }}
+          >
             <ambientLight intensity={0.5} />
             <directionalLight
               position={[5, 5, 5]}
@@ -87,17 +93,23 @@ const Hero = () => {
               color={currentProps.color}
             />
 
-            <Crystal {...currentProps} />
+            <Crystal {...currentProps} opacity={crystalOpacity} />
 
-            <OrbitControls enableZoom={false} enablePan={false} />
+            <OrbitControls
+              enableZoom={false}
+              enablePan={false}
+              enabled={!isMobile}
+            />
 
-            {/* 2. 가장 중요한 부분: 주변 환경을 추가합니다. */}
             <Environment preset="city" />
           </Canvas>
         </motion.div>
 
         {/* 자기소개 텍스트 */}
-        <div className="relative z-10 text-center pointer-events-none">
+        <motion.div
+          style={{ opacity: textOpacity }}
+          className="relative z-10 text-center pointer-events-none"
+        >
           <TypingText text="Hello, I'm Minseok." />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -107,7 +119,7 @@ const Hero = () => {
           >
             A Creative Frontend Developer.
           </motion.p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

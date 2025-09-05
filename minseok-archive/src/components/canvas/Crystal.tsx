@@ -1,43 +1,55 @@
 // src/components/canvas/Crystal.tsx
+
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
-import { Mesh, MeshStandardMaterial } from "three";
+import { Mesh } from "three";
 import { useSpring, a } from "@react-spring/three";
+import useIsMobile from "../../hooks/useIsMobile";
 
 interface CrystalProps {
   color: string;
   metalness: number;
   roughness: number;
+  opacity: number;
 }
 
-const Crystal = ({ color, metalness, roughness }: CrystalProps) => {
+const Crystal = ({ color, metalness, roughness, opacity }: CrystalProps) => {
   const meshRef = useRef<Mesh>(null);
   const { viewport } = useThree();
+  const isMobile = useIsMobile();
 
-  // props가 변경될 때마다 애니메이션 적용
+  // ⭐️ 핵심 1: 모바일일 경우 크리스탈의 기본 크기를 절반으로 설정합니다.
+  const crystalSize = isMobile ? 0.75 : 1.5;
+
   const springs = useSpring({
     color: color,
     metalness: metalness,
     roughness: roughness,
+    opacity: opacity,
     config: { mass: 2, tension: 200, friction: 50 },
   });
 
-  // 마우스 위치에 따라 회전
-  useFrame(({ mouse }) => {
+  useFrame((state, delta) => {
     if (meshRef.current) {
-      const x = (mouse.x * viewport.width) / 20;
-      const y = (mouse.y * viewport.height) / 20;
-      meshRef.current.rotation.set(y, x, 0);
+      if (isMobile) {
+        meshRef.current.rotation.y += delta * 0.3;
+      } else {
+        const x = (state.mouse.x * viewport.width) / 20;
+        const y = (state.mouse.y * viewport.height) / 20;
+        meshRef.current.rotation.set(y, x, 0);
+      }
     }
   });
 
   return (
     <a.mesh ref={meshRef} rotation-x={0.3}>
-      <icosahedronGeometry args={[1.5, 1]} />
+      <icosahedronGeometry args={[crystalSize, 1]} />
       <a.meshStandardMaterial
-        color={springs.color} // 애니메이션 값 사용
-        metalness={springs.metalness} // 애니메이션 값 사용
-        roughness={springs.roughness} // 애니메이션 값 사용
+        color={springs.color}
+        metalness={springs.metalness}
+        roughness={springs.roughness}
+        opacity={springs.opacity}
+        transparent={true}
       />
     </a.mesh>
   );
