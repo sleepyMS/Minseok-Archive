@@ -6,6 +6,7 @@ import Header from "./Header";
 import CustomCursor from "./CustomCursor";
 import SkipToContent from "./SkipToContent";
 import Footer from "./Footer";
+import AnimatedBackground from "./AnimatedBackground";
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,7 +21,11 @@ const Layout = ({ children }: LayoutProps) => {
       {/* 3. 커스텀 마우스 커서 컴포넌트 */}
       <CustomCursor />
 
-      <div className="min-h-screen bg-primary text-primary">
+      <div className="fixed inset-0 -z-10 overflow-hidden bg-primary">
+        <AnimatedBackground />
+      </div>
+
+      <div className="min-h-screen bg-transparent text-primary">
         <Header />
         {/* 4. 페이지 진입 및 전환 애니메이션 */}
         <AnimatePresence mode="wait">
