@@ -1,14 +1,21 @@
 // src/sections/Hero.tsx
 
-import { useRef } from "react"; // useState 제거
-import { Canvas } from "@react-three/fiber";
-import { motion, useScroll, useTransform } from "framer-motion"; // useMotionValueEvent 제거
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { useTheme } from "../hooks/useTheme";
-import Crystal from "../components/canvas/Crystal";
-import useIsMobile from "../hooks/useIsMobile";
+import type { MotionValue } from "framer-motion";
+import type { Group } from "three";
 
-// TypingText 컴포넌트는 변경 없음
+// Custom Hooks & Components
+import { useTheme } from "../hooks/useTheme";
+import useIsMobile from "../hooks/useIsMobile";
+import Crystal from "../components/canvas/Crystal";
+import LenisSync from "../components/LenisSync";
+
+// ============================================================================
+// 1. 타이핑 효과를 위한 텍스트 컴포넌트
+// ============================================================================
 const TypingText = ({ text }: { text: string }) => {
   const textVariants = {
     hidden: { opacity: 0 },
@@ -37,6 +44,49 @@ const TypingText = ({ text }: { text: string }) => {
   );
 };
 
+// ============================================================================
+// 2. 3D 객체들을 그룹으로 묶고, 씬 내부에서 스케일을 제어하는 컴포넌트
+// ============================================================================
+const ThreeScene = ({
+  scale,
+  opacity,
+  color,
+  metalness,
+  roughness,
+}: {
+  scale: MotionValue<number>;
+  opacity: MotionValue<number>;
+  color: string;
+  metalness: number;
+  roughness: number;
+}) => {
+  const groupRef = useRef<Group>(null);
+
+  // R3F의 렌더링 루프에 맞춰 매 프레임 실행됩니다.
+  useFrame(() => {
+    if (groupRef.current) {
+      // MotionValue에서 현재 scale 값을 직접 읽어와 3D 그룹에 적용합니다.
+      const currentScale = scale.get();
+      groupRef.current.scale.set(currentScale, currentScale, currentScale);
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <Crystal
+        color={color}
+        metalness={metalness}
+        roughness={roughness}
+        opacity={opacity}
+      />
+      {/* 다른 3D 객체가 있다면 이 그룹 안에 추가하면 됩니다. */}
+    </group>
+  );
+};
+
+// ============================================================================
+// 3. 메인 Hero 컴포넌트
+// ============================================================================
 const Hero = () => {
   const { theme } = useTheme();
   const targetRef = useRef<HTMLDivElement>(null);
@@ -47,16 +97,10 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
+  // Framer Motion의 MotionValue들은 그대로 사용합니다.
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 7]);
-  const opacityMotionValue = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-  // ❌ 1. 리렌더링을 유발하던 useState와 useMotionValueEvent를 완전히 제거합니다.
-  // const [crystalOpacity, setCrystalOpacity] = useState(1);
-  // useMotionValueEvent(opacityMotionValue, "change", (latest) => {
-  //   setCrystalOpacity(latest);
-  // });
-
-  const textOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const opacityMotionValue = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const textOpacity = useTransform(scrollYProgress, [0, 1.0], [1, 0]);
 
   const crystalProps = {
     dark: { color: "#8A2BE2", metalness: 0.7, roughness: 0.1 },
@@ -69,16 +113,18 @@ const Hero = () => {
     <section ref={targetRef} className="relative h-[150vh]">
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
         <motion.div
-          style={{ scale }}
-          className="absolute w-screen h-screen"
+          className="absolute w-full h-full"
           data-interactive
           data-cursor-text={"Drag"}
         >
           <Canvas
-            dpr={[1, 1.5]}
+            // dpr={[1, 1.5]}
             style={{ pointerEvents: isMobile ? "none" : "auto" }}
             camera={{ position: [0, 0, 5], fov: 45 }}
           >
+            <LenisSync />
+
+            {/* 조명 및 환경 설정 */}
             <ambientLight intensity={0.5} />
             <directionalLight
               position={[5, 5, 5]}
@@ -91,15 +137,17 @@ const Hero = () => {
               color={currentProps.color}
             />
 
-            {/* ✅ 2. Crystal 컴포넌트에 motionValue를 직접 전달합니다. */}
-            <Crystal {...currentProps} opacity={opacityMotionValue} />
+            <ThreeScene
+              scale={scale}
+              opacity={opacityMotionValue}
+              {...currentProps}
+            />
 
             <OrbitControls
               enableZoom={false}
               enablePan={false}
               enabled={!isMobile}
             />
-
             <Environment preset="city" />
           </Canvas>
         </motion.div>
