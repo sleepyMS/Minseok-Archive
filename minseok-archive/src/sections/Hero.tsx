@@ -163,7 +163,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 2.5 }}
             className="text-lg md:text-xl text-secondary mt-4"
           >
-            A Creative Full Stack Developer.
+            A Creative Full-stack Developer.
           </motion.p>
         </motion.div>
       </div>
