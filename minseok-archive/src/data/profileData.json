@@ -3,7 +3,7 @@
   "title": "Creative Full-stack Developer",
   "affiliation": "Kangnam University",
   "major": "Department of Software Applications",
-  "profileImage": "/images/minseok_face.png",
+  "profileImage": "src/assets/minseok_face.png",
   "contact": {
     "email": "minseok011017@gmail.com",
     "phone": "+82 10-1234-5678"
