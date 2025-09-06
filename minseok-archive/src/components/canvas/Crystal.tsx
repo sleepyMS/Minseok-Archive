@@ -1,6 +1,6 @@
 // src/components/canvas/Crystal.tsx
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh, MathUtils } from "three";
 import { useSpring, a } from "@react-spring/three";
