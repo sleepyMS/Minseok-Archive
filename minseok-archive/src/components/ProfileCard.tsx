@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, Building, GraduationCap } from "lucide-react";
-import profileImage from "/src/assets/profile-image.png";
 
 // profileData.json의 타입 정의
 interface ProfileData {
@@ -34,7 +33,7 @@ const ProfileCard: React.FC<{ data: ProfileData }> = ({ data }) => {
     >
       {/* 이미지는 JSON 파일에서 불러옵니다 */}
       <motion.img
-        src={profileImage}
+        src={data.profileImage}
         alt={data.name}
         className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-accent"
         variants={itemVariants}
