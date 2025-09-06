@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Code, Terminal, BarChart2 } from "lucide-react";
 import tddVisual from "/src/assets/tdd-visual.jpg";
 import projectCover from "/src/assets/project-cover.jpg";
 import contextApiVisual from "/src/assets/context-api-visual.png";
