@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, Building, GraduationCap } from "lucide-react";
-import profileImage from "/src/assets/profile-image.jpg";
+import profileImage from "/src/assets/profile-image.png";
 
 // profileData.json의 타입 정의
 interface ProfileData {
